@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Closet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* General page styling */
+        body {
+            background-color: white;
+            color: #343a40;
+        }
+
+        .container {
+            max-width: 1000px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            color: black;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Custom styles for the closet section */
+        .closet-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap; /* Wrap the items if they exceed the container width */
+            padding: 20px 0;
+            border: 2px solid #bb0e56;
+            border-radius: 10px;
+            background-color: white;
+        }
+
+        .closet-section {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .closet-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 150px;
+        }
+
+        .closet-item img {
+            max-width: 120px;
+            margin-bottom: 10px;
+            border: 2px solid #bb0e56;
+            border-radius: 8px;
+        }
+
+        .delete-button {
+            background-color: #bb0e56;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .delete-button:hover {
+            background-color: #a00d4e;
+        }
+
+        /* Style for the suggested outfit section */
+        .suggested-outfit {
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .suggested-outfit img {
+            max-width: 100px;
+            margin-right: 10px;
+            border: 2px solid #bb0e56;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center">Virtual Closet</h1>
+    
+    <form method="POST" enctype="multipart/form-data" class="mb-4">
+        <div class="mb-3">
+            <label for="file">Choose Files:</label>
+            <input class="form-control" type="file" name="file" id="file" multiple required>
+        </div>
+
+        <div class="mb-3">
+            <label for="category">Select Item Type:</label>
+            <select class="form-select" name="category" id="category" required>
+                <option value="" disabled selected>Select item type</option>
+                <option value="Top">Top</option>
+                <option value="Bottom">Bottom</option>
+                <option value="Shoes">Shoes</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Upload Item</button>
+    </form>
+
+    <hr>
+
+    <h2>Your Closet:</h2>
+    <div class="closet-container">
+        <!-- Section for Tops -->
+        <div class="closet-section">
+            <h3>Tops:</h3>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% if tops %}
+                    {% for id, top in tops %}
+                        <div class="closet-item">
+                            <img src="{{ top }}" alt="Top">
+                            <form method="POST" action="/delete/{{ id }}">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No Tops Uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Section for Bottoms -->
+        <div class="closet-section">
+            <h3>Bottoms:</h3>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% if bottoms %}
+                    {% for id, bottom in bottoms %}
+                        <div class="closet-item">
+                            <img src="{{ bottom }}" alt="Bottom">
+                            <form method="POST" action="/delete/{{ id }}">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No Bottoms Uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Section for Shoes -->
+        <div class="closet-section">
+            <h3>Shoes:</h3>
+            <div class="d-flex justify-content-center flex-wrap">
+                {% if shoes %}
+                    {% for id, shoe in shoes %}
+                        <div class="closet-item">
+                            <img src="{{ shoe }}" alt="Shoes">
+                            <form method="POST" action="/delete/{{ id }}">
+                                <button type="submit" class="delete-button">Delete</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No Shoes Uploaded</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="suggested-outfit">
+        <h3>Suggested Outfit:</h3>
+        {% if suggested_outfit %}
+            {% for item in suggested_outfit %}
+                <img src="{{ item }}" alt="Outfit Piece">
+            {% endfor %}
+        {% else %}
+            <p>No Outfit Suggested</p>
+        {% endif %}
+    </div>
+</div>
+
+<footer>
+    <p>© 2024 Virtual Closet. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
